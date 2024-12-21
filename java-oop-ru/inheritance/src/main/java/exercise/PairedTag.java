@@ -2,14 +2,14 @@ package exercise;
 
 import java.util.Map;
 import java.util.List;
-import java.util.stream.Collectors;
+// import java.util.stream.Collectors;
 
 // BEGIN
 class PairedTag extends Tag {
     String intText;
     List<Tag> children;
 
-    public PairedTag(String myTeg, Map<String, String> myMapa, String intText, List<Tag> children) {
+    PairedTag(String myTeg, Map<String, String> myMapa, String intText, List<Tag> children) {
         super(myTeg, myMapa);
         this.intText = intText;
         this.children = children;

@@ -9,7 +9,7 @@ class Tag {
     Map<String, String> myMapa;
 
 
-    public Tag(String myTeg, Map<String, String> myMapa) {
+    Tag(String myTeg, Map<String, String> myMapa) {
         this.myTeg = myTeg;
         this.myMapa = myMapa;
     }

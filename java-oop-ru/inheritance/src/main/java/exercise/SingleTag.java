@@ -5,11 +5,11 @@ import java.util.Map;
 // BEGIN
 class SingleTag extends Tag {
 
-    public SingleTag(String myTeg, Map<String, String> myMapa) {
+    SingleTag(String myTeg, Map<String, String> myMapa) {
         super(myTeg, myMapa);
     }
 
-    public String toString(){
+    public String toString() {
         StringBuilder retTeg = new StringBuilder("<");
         retTeg.append(myTeg);
         for (var iMap :myMapa.entrySet()) {
