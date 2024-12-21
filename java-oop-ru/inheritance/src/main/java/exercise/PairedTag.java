@@ -15,7 +15,7 @@ class PairedTag extends Tag {
         this.children = children;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuilder retTeg;
         retTeg = new StringBuilder("<");
         retTeg.append(myTeg);
