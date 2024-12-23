@@ -2,7 +2,7 @@ package exercise;
 
 // BEGIN
 class NegativeRadiusException extends Exception {
-    public NegativeRadiusException(String expStr) {
+    NegativeRadiusException(String expStr) {
         super(expStr);
     }
 

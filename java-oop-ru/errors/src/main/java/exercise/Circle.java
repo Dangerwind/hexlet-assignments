@@ -6,7 +6,7 @@ class Circle {
     Point ciPOint;
     int radius;
 
-    public Circle(Point ciPOint, int radius) {
+    Circle(Point ciPOint, int radius) {
         this.ciPOint = ciPOint;
         this.radius = radius;
     }
