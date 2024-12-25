@@ -19,9 +19,10 @@ class ValidationTest {
         Map<String, List<String>> result3 = Validator.advancedValidate(address3);
 
         Map<String, List<String>> expected3 = Map.of("city", List.of("can not be null")
-                ,"country" ,List.of("length less than 3")
+                ,"country", List.of("length less than 3")
                 ,"houseNumber", List.of("can not be null")
-                ,"street", List.of("can not be null"));
+                ,"street", List.of("can not be null")
+        );
         assertThat(result3).isEqualTo(expected3);
 
 
