@@ -54,6 +54,5 @@ class ValidationTest {
     }
 
     // BEGIN
-    
     // END
 }

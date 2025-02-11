@@ -12,7 +12,7 @@ class Validator {
         Class<?> addrObj = myAddres.getClass();
         Field[] fields = addrObj.getDeclaredFields();
         for (Field field : fields) {
-            String fieldName = field.toString().split("\\.") [fields.length - 1];
+            String fieldName = field.toString().split("\\.")[fields.length - 1];
             boolean isNotNull = field.isAnnotationPresent(NotNull.class);
             field.setAccessible(true);
             try {
