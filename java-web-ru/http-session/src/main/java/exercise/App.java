@@ -22,8 +22,8 @@ public final class App {
 
 
         app.get("/users", ctx -> {
-            var pageNum = ctx.queryParamAsClass("page",Integer.class).getOrDefault(1);
-            var perNum = ctx.queryParamAsClass("per",Integer.class).getOrDefault(5);
+            var pageNum = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
+            var perNum = ctx.queryParamAsClass("per", Integer.class).getOrDefault(5);
 
             List<Map<String, String>> usersList = new ArrayList<>(Data.getUsers());
             List<Map<String, String>> copyUsersList = new ArrayList<>();
@@ -43,16 +43,12 @@ public final class App {
                     currentPer = 0;
                 }
             }
-
-
-             ctx.json(copyUsersList);
+            ctx.json(copyUsersList);
         });
      //   app.start(7070); // Стартуем веб-сервер
         
         // END
-
         return app;
-
     }
 
     public static void main(String[] args) {
