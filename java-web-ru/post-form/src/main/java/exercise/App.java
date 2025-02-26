@@ -37,9 +37,9 @@ public final class App {
 
         app.post("/users", ctx -> {
             var firstName = ctx.formParam("firstName").trim();
-            var firstNameCap = firstName.substring(0,1).toUpperCase() + firstName.substring(1);
+            var firstNameCap = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
             var lastName = ctx.formParam("lastName").trim();
-            var lastNameCap = lastName.substring(0,1).toUpperCase() + lastName.substring(1);
+            var lastNameCap = lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
             var email = ctx.formParam("email").trim().toLowerCase();
             var password = ctx.formParam("password");
 
