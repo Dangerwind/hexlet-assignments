@@ -19,33 +19,32 @@ public class PostsController {
     }
 
     // BEGIN
-
-    public static void index(Context ctx) {
-        var posts = PostRepository.getEntities();
-        var page = new PostsPage(posts);
-        page.setFlash(ctx.consumeSessionAttribute("flash"));
-        ctx.render("posts/index.jte", model("page", page));
-    }
-
     public static void create(Context ctx) {
         try {
             var name = ctx.formParamAsClass("name", String.class)
-                    .check(x -> x.length() >= 2, "Имя слишком короткое")
+                    .check(value -> value.length() >= 2, "The name must not be shorter than two characters")
                     .get();
             var body = ctx.formParam("body");
             var post = new Post(name, body);
             PostRepository.save(post);
-
             ctx.sessionAttribute("flash", "Post was successfully created!");
-
+            ctx.sessionAttribute("flash-type", "success");
             ctx.redirect(NamedRoutes.postsPath());
+
         } catch (ValidationException e) {
             var name = ctx.formParam("name");
             var body = ctx.formParam("body");
             var page = new BuildPostPage(name, body, e.getErrors());
             ctx.render("posts/build.jte", model("page", page)).status(422);
-
         }
+    }
+
+    public static void index(Context ctx) {
+        var posts = PostRepository.getEntities();
+        var page = new PostsPage(posts);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+        ctx.render("posts/index.jte", model("page", page));
     }
     
     // END

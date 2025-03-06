@@ -12,5 +12,4 @@ import exercise.dto.BasePage;
 public class PostsPage extends BasePage {
     private List<Post> posts;
 }
-
 // END

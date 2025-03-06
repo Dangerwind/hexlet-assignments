@@ -1,40 +1,29 @@
-
 @import exercise.dto.posts.PostsPage
+@import exercise.util.NamedRoutes
 @param PostsPage page
+
 @template.layout.page(
 
+page = page,
 content = @`
-    <div class="mx-auto p-4 py-md-5">
-        <main>
-            <h1>Все посты</h1>
-<!--
-            <div class="mb-3">
-                <a href="/articles/build">Создать новую статью</a>
-            </div>
--->
-           @if (page != null && page.getFlash() != null)
-                <div class="alert alert-primary" role="alert">
-                    ${page.getFlash()}
-                </div>
-            @endif
-
-
-            <table class="table table-striped">
-                @for(var article : page.getPosts())
-                    <tr>
-                        <td>
-                            ${article.getId()}
-                        </td>
-                        <td>
-                            ${article.getName()}
-                        </td>
-                        <td>
-                            ${article.getBody()}
-                        </td>
-                    </tr>
-                @endfor
-            </table>
-        </main>
+    <h1>Все посты</h1>
+    <div class="mb-3">
+        <a href="${NamedRoutes.buildPostPath()}">Создать новый пост</a>
     </div>
-`
+    <table class="table table-striped">
+        @for(var post : page.getPosts())
+            <tr>
+                <td>
+                    ${post.getId()}
+                </td>
+                <td>
+                    <a href="${NamedRoutes.postPath(post.getId())}">${post.getName()}</a>
+                </td>
+                <td>
+                    ${post.getBody()}
+                </td>
+            </tr>
+        @endfor
+    </table>
+`,
 )
