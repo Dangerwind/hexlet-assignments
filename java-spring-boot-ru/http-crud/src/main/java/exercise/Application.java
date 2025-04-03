@@ -30,16 +30,17 @@ public class Application {
 
 
         @GetMapping("/posts") // Список страниц
-        public List<Post> index(@RequestParam(defaultValue = "10") Integer limit) {
-            return posts.stream().limit(limit).toList();
+        public List<Post> index(
+                @RequestParam(defaultValue = "1") Integer page,
+                @RequestParam(defaultValue = "10") Integer limit) {
+            return posts.stream().skip(limit * (page - 1)).limit(limit).toList();
         }
 
         @GetMapping("/posts/{id}") // Вывод страницы
         public Optional<Post> show(@PathVariable String id) {
-        var page = posts.stream()
+            return posts.stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
-        return page;
     }
 
 
