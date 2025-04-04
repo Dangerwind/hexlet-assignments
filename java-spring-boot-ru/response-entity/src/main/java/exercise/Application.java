@@ -32,53 +32,46 @@ public class Application {
     }
 
     // BEGIN
+    @GetMapping("/posts")
+    public ResponseEntity<List<Post>> index(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit) {
 
-    @GetMapping("/posts") // Список страниц
-    public ResponseEntity<List<Post>> index() {
-
-        return ResponseEntity.ok()
+        return ResponseEntity
+                .ok()
                 .header("X-Total-Count", String.valueOf(posts.size()))
-                .body(posts);
-
+                .body(posts.stream().skip((page - 1) * limit).limit(limit).toList());
     }
 
-    @GetMapping("/posts/{id}") // Вывод страницы
+    @PostMapping("/posts")
+    public ResponseEntity<Post> create(@RequestBody Post post) {
+        posts.add(post);
+        URI location = URI.create("/posts/" + post.getId());
+        return ResponseEntity.created(location).body(post);
+    }
+
+    @GetMapping("/posts/{id}")
     public ResponseEntity<Post> show(@PathVariable String id) {
-        System.out.println(" ====== i am tut ======");
-
-        var ret = posts.stream()
+        var post = posts.stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
-
-        if (ret.isEmpty()) {
-            return ResponseEntity.status(404).body(null);
-        }
-        return ResponseEntity.ok().body(ret.get());
+        return ResponseEntity.of(post);
     }
 
-
-    @PostMapping("/posts") // Создание страницы
-    public ResponseEntity<Post> create(@RequestBody Post page) {
-        posts.add(page);
-        return ResponseEntity.status(201).body(page);
-    }
-
-    @PutMapping("/posts/{id}") // Обновление страницы
+    @PutMapping("/posts/{id}")
     public ResponseEntity<Post> update(@PathVariable String id, @RequestBody Post data) {
-        var maybePage = posts.stream()
+        var maybePost = posts.stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
-        int stat = 200;
-        if (maybePage.isPresent()) {
-            var page = maybePage.get();
-            page.setTitle(data.getTitle());
-            page.setBody(data.getBody());
-            page.setId(data.getId());
-        } else {
-            return ResponseEntity.status(404).body(null);
+        var status = HttpStatus.NOT_FOUND;
+        if (maybePost.isPresent()) {
+            var post = maybePost.get();
+            post.setId(data.getId());
+            post.setTitle(data.getTitle());
+            post.setBody(data.getBody());
+            status = HttpStatus.OK;
         }
-
-        return ResponseEntity.ok().body(maybePage.get());
+        return ResponseEntity.status(status).body(data);
     }
     
     // END
