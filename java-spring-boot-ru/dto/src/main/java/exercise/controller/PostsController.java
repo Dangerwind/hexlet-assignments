@@ -3,7 +3,7 @@ package exercise.controller;
 //import exercise.model.Comment;
 import exercise.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+//import org.springframework.http.HttpStatus;
 // import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
+
 
 // BEGIN
 @RestController
@@ -57,7 +60,7 @@ public class PostsController {
     private CommentRepository commentRepository;
 
     @GetMapping(path = "")
-   //  @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.OK)
     public List<PostDTO> showAll() {
 
         List<PostDTO> retList = new ArrayList<>();
@@ -73,7 +76,7 @@ public class PostsController {
     @GetMapping(path = "/{id}")
     public PostDTO showPost(@PathVariable Long id) {
         var post = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
         return postToDTO(post);
     }
 
