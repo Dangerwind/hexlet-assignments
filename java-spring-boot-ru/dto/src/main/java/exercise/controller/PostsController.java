@@ -33,17 +33,27 @@ public class PostsController {
 
 
 
-        List<CommentDTO> listComDto = new ArrayList<>();
+        // List<CommentDTO> listComDto = new ArrayList<>();
 
         var comm = commentRepository.findByPostId(post.getId());
 
+        var listComDto = comm.stream()
+                .map((com) -> {
+                    var cDTO = new CommentDTO();
+                    cDTO.setId(com.getId());
+                    cDTO.setBody(com.getBody());
+                    return cDTO;
+                }).toList();
+
+
+/*
         for (var comment : comm) {
             var comDto = new CommentDTO();
             comDto.setId(comment.getId());
             comDto.setBody(comment.getBody());
             listComDto.add(comDto);
         }
-       // System.out.println("  --- " + listComDto.toString() + " -----");
+*/
 
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
@@ -63,13 +73,18 @@ public class PostsController {
     @ResponseStatus(HttpStatus.OK)
     public List<PostDTO> showAll() {
 
-        List<PostDTO> retList = new ArrayList<>();
+       // List<PostDTO> retList = new ArrayList<>();
 
         List<Post> posts = postRepository.findAll();
+
+        var retList = posts.stream()
+                .map(this::postToDTO)
+                .toList();
+        /*
         for (Post post : posts) {
             retList.add(postToDTO(post));
         }
-
+        */
         return retList;
     }
 
