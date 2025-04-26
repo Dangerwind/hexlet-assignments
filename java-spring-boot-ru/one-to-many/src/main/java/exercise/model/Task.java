@@ -1,13 +1,9 @@
 package exercise.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
+import jakarta.persistence.*;
 //import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -42,7 +38,7 @@ public class Task {
 
     // BEGIN
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User assignee;
     // END
