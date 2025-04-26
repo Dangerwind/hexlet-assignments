@@ -41,7 +41,7 @@ public class TasksController {
     public List<TaskDTO> getAllTasks() {
         var tasks = taskRepository.findAll();
         var tDTO =  tasks.stream()
-                .map( (task) -> taskMapper.map(task))
+                .map((task) -> taskMapper.map(task))
                 .toList();
         return tDTO;
     }
@@ -71,7 +71,8 @@ public class TasksController {
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
 
         var user = userRepository.findById(taskUpdateDTO.getAssigneeId())
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + taskUpdateDTO.getAssigneeId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id "
+                        + taskUpdateDTO.getAssigneeId() + " not found"));
 
         taskMapper.update(taskUpdateDTO, task);
 
@@ -91,8 +92,8 @@ public class TasksController {
     //GET /tasks – просмотр списка всех задач
     //GET /tasks/{id} – просмотр конкретной задачи
     //POST /tasks – создание новой задачи
-    //PUT /tasks/{id} – редактирование задачи. При редактировании мы должны иметь возможность поменять название, описание задачи и ответственного разработчика
-    //DELETE /tasks/{id} – удаление задачи
+    //PUT /tasks/{id} – редактирование задачи.
+  //DELETE /tasks/{id} – удаление задачи
 
     // END
 }
