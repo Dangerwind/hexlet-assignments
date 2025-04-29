@@ -45,9 +45,8 @@ public class ProductsController {
         var prod = prodBuilder.build(params);
 
         var posts = productRepository.findAll(prod, PageRequest.of(page - 1, 10));
-        var result = posts.map(productMapper::map).toList();
 
-        return result;
+        return posts.map(productMapper::map).toList();
     }
     
     // END
