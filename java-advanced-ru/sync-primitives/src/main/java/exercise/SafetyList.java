@@ -5,22 +5,26 @@ import java.util.ArrayList;
 class SafetyList {
     // BEGIN
 
-    ArrayList<Integer> list; // = new ArrayList<>();
+    private int[] data = new int[10];
 
-    public SafetyList() {
-        list = new ArrayList<>();
-    }
-
-    public synchronized void add(int value) {
-        list.add(value);
-    }
+    private int size;
 
     public int getSize() {
-        return list.size();
+        return size;
     }
 
     public int get(int index) {
-        return list.get(index);
+        return data[index];
+    }
+
+    public synchronized void add(int element) {
+        if (data.length == size) {
+            int[] extendedData = new int[data.length * 2];
+            System.arraycopy(data, 0, extendedData, 0, data.length);
+            data = extendedData;
+        }
+
+        data[size++] = element;
     }
 
     
