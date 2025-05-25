@@ -1,9 +1,14 @@
 package exercise;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static exercise.App.getDirectorySize;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOut;
+
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 import java.nio.file.Paths;
@@ -46,6 +51,27 @@ class AppTest {
     }
 
     // BEGIN
+    @Test
+    void testDirSize() throws Exception {
+        CompletableFuture<Long> result = getDirectorySize("src/test/resources/");
+        var sizeDir = result.get();
+
+        long directorySize;
+        try (var stream = Files.list(Paths.get("src/test/resources/"))) {
+            directorySize = stream
+                    .filter(Files::isRegularFile)
+                    .mapToLong(path -> {
+                        try {
+                            return Files.size(path);
+                        } catch (IOException e) {
+                            return 0L;
+                        }
+                    })
+                    .sum();
+        }
+        assertThat(directorySize).isEqualTo(sizeDir);
+
+    }
     
     // END
 }

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 import java.io.File;
 import java.nio.file.StandardOpenOption;
+import java.util.stream.Stream;
 
 class App {
 
@@ -36,6 +37,9 @@ class App {
 
     public static void main(String[] args) throws Exception {
         // BEGIN
+
+
+
         var  file1 = "src/main/resources/file1.txt";
         var file2 = "src/main/resources/file2.txt";
         var outputFile = "src/main/resources/output.txt";
@@ -47,6 +51,28 @@ class App {
                     return null;
                 });
         // END
+    }
+
+    public static CompletableFuture<Long> getDirectorySize(String pathDir) {
+        return CompletableFuture.supplyAsync(() -> {
+            Path pathD = Paths.get(pathDir);
+            try (Stream<Path> stream = Files.list(pathD)) {
+                return stream
+                        .filter(Files::isRegularFile) // Только обычные файлы
+                        .mapToLong(path -> {
+                            try {
+                                return Files.size(path);
+                            } catch (IOException e) {
+                                // Если не удалось получить размер — считаем 0
+                                return 0L;
+                            }
+                        })
+                        .sum();
+            } catch (Exception e) {
+                e.printStackTrace(System.out);
+                return null;
+            }
+        });
     }
 }
 
