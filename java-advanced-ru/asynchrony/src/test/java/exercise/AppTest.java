@@ -52,25 +52,21 @@ class AppTest {
 
     // BEGIN
     @Test
-    void testDirSize() throws Exception {
-        CompletableFuture<Long> result = getDirectorySize("src/test/resources/");
-        var sizeDir = result.get();
+    void testGetSize() throws Exception {
+        CompletableFuture<Long> result = App.getDirectorySize(
+                "src/test/resources/dir/"
+        );
 
-        long directorySize;
-        try (var stream = Files.list(Paths.get("src/test/resources/"))) {
-            directorySize = stream
-                    .filter(Files::isRegularFile)
-                    .mapToLong(path -> {
-                        try {
-                            return Files.size(path);
-                        } catch (IOException e) {
-                            return 0L;
-                        }
-                    })
-                    .sum();
-        }
-        assertThat(directorySize).isEqualTo(sizeDir);
+        assertThat(result.get()).isEqualTo(26);
+    }
 
+    @Test
+    void testGetEmptyDirSize() throws Exception {
+        CompletableFuture<Long> result = App.getDirectorySize(
+                "src/test/resources/empty_dir/"
+        );
+
+        assertThat(result.get()).isEqualTo(0);
     }
     
     // END

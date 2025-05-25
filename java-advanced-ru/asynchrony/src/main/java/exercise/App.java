@@ -13,25 +13,69 @@ import java.util.stream.Stream;
 class App {
 
     // BEGIN
-    public static CompletableFuture<String> unionFiles(String path1, String path2, String path3) {
-      return CompletableFuture.supplyAsync(() -> {
-          try {
-              System.out.println(" ------------------ ");
-              String content1 = Files.readString(Paths.get(path1));
-              String content2 = Files.readString(Paths.get(path2));
-              String unionContent = content1 + System.lineSeparator() + content2;
-              Files.writeString(Paths.get(path3), unionContent, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-              return unionContent;
-
-          } catch (IOException e) {
-              e.printStackTrace(System.out);
-              return "";
-          }
-
-
-      });
+    private static Path getFullPath(String filePath) {
+        return Paths.get(filePath).toAbsolutePath().normalize();
     }
 
+    public static CompletableFuture<String> unionFiles(String source1, String source2, String dest) {
+
+        CompletableFuture<String> content1 = CompletableFuture.supplyAsync(() -> {
+            String content = "";
+
+            try {
+                content = Files.readString(getFullPath(source1));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return content;
+        });
+
+        CompletableFuture<String> content2 = CompletableFuture.supplyAsync(() -> {
+
+            String content = "";
+            try {
+                content = Files.readString(getFullPath(source2));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return content;
+        });
+
+        return content1.thenCombine(content2, (cont1, cont2) -> {
+            String union = cont1 + cont2;
+            try {
+                Files.writeString(getFullPath(dest), union, StandardOpenOption.CREATE);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return "ok!";
+
+        }).exceptionally(ex -> {
+            System.out.println("Oops! We have an exception - " + ex.getMessage());
+            return "Unknown!";
+        });
+    }
+
+    public static CompletableFuture<Long> getDirectorySize(String path) {
+
+        var directory = new File(path);
+
+        if (!directory.isDirectory()) {
+            return CompletableFuture.completedFuture(0L);
+        }
+
+        File[] files = directory.listFiles();
+
+        CompletableFuture<Long>[] fileSizes = Arrays.stream(files)
+                .filter(File::isFile)
+                .map(file -> CompletableFuture.supplyAsync(() -> file.length()))
+                .toArray(CompletableFuture[]::new);
+
+        return CompletableFuture.allOf(fileSizes)
+                .thenApply(v -> Arrays.stream(fileSizes)
+                        .mapToLong(CompletableFuture::join)
+                        .sum());
+    }
     
     // END
 
@@ -40,39 +84,18 @@ class App {
 
 
 
-        var  file1 = "src/main/resources/file1.txt";
-        var file2 = "src/main/resources/file2.txt";
-        var outputFile = "src/main/resources/output.txt";
-
-        unionFiles(file1, file2, outputFile)
-                .thenRun(() -> System.out.println("Файлы объединены успешно!"))
-                .exceptionally(ex -> {
-                    System.err.println("Ошибка: " + ex.getMessage());
-                    return null;
-                });
+        CompletableFuture<String> result = unionFiles(
+                "src/main/resources/file1.txt",
+                "src/main/resources/file2.txt",
+                "src/main/resources/dest.txt"
+        );
+        CompletableFuture<Long> size = getDirectorySize("src/main/resources");
+        result.get();
+        System.out.print("done! Size in = ");
+        System.out.println(size.get());
         // END
     }
 
-    public static CompletableFuture<Long> getDirectorySize(String pathDir) {
-        return CompletableFuture.supplyAsync(() -> {
-            Path pathD = Paths.get(pathDir);
-            try (Stream<Path> stream = Files.list(pathD)) {
-                return stream
-                        .filter(Files::isRegularFile) // Только обычные файлы
-                        .mapToLong(path -> {
-                            try {
-                                return Files.size(path);
-                            } catch (IOException e) {
-                                // Если не удалось получить размер — считаем 0
-                                return 0L;
-                            }
-                        })
-                        .sum();
-            } catch (Exception e) {
-                e.printStackTrace(System.out);
-                return null;
-            }
-        });
-    }
+
 }
 
